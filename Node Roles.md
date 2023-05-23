@@ -19,8 +19,16 @@ cluster.remote.connect: false
 Here, you can see the voting_only option; if we set it false, the node will
 work as the master eligible node and can be picked as a master node.
 However, if we set the voting_only option as true, the node can participate
-in master node selection but cannot become a master node by itself. I will
-explain how master node selection works later.
+in master node selection but cannot become a master node by itself.
+
+The master node's tasks are primarily used for lightweight
+cluster-wide operations, including creating or deleting an index, tracking the
+cluster nodes, and determining the location of the allocated shards. By default,
+the master-eligible role is enabled. A master-eligible node can be elected to
+become the master node (the node with the asterisk) by the master-election
+process. You can disable this type of role for a node by setting node.master to
+false in the elasticsearch.yml file
+
 
 #### Data node
 Data nodes are responsible for storing data and performing CRUD
@@ -38,6 +46,11 @@ node.ml: false
 cluster.remote.connect: false
 ```
 Here, we are setting the node.data to true and all other options to false.
+
+A data node contains data that contains indexed documents. It
+handles related operations such as CRUD, search, and aggregation. By default,
+the data node role is enabled, and you can disable such a role for a node by
+setting the node.data to false in the elasticsearch.yml file.
 
 #### Ingest Node
 Ingest nodes are used to enrich and transform data before indexing it. So,
@@ -58,6 +71,11 @@ cluster.remote.connect: false
 ```
 Here, we are setting the node.ingest to true and all other options to false.
 
+Using an ingest nodes is a way to process a document in pipeline
+mode before indexing the document. By default, the ingest node role is
+enabled—you can disable such a role for a node by setting node.ingest to
+false in the elasticsearch.yml file.
+
 #### Machine learning node
 Elastic machine learning is not freely available, so if xpack.ml.enabled is
 set to true, we can create a machine learning node by changing the node.ml
@@ -77,6 +95,10 @@ cluster.remote.connect: false
 So, we can change the node type to any of the preceding options, but a node
 has all the types by default.
 
-
+#### Coordinating-only node
+If all three roles (master eligible, data, and ingest) are
+disabled, the node will only act as a coordination node that performs routing
+requests, handling the search reduction phase, and distributing works via bulk
+indexing.
 
 
