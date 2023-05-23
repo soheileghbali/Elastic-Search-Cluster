@@ -29,7 +29,7 @@ become the master node (the node with the asterisk) by the master-election
 process. You can disable this type of role for a node by setting node.master to
 false in the elasticsearch.yml file
 
-🟥 The number of master nodes must always be even.
+🟥 The number of master nodes must always be odd to prevent split brain problem.
 
 #### Data node
 Data nodes are responsible for storing data and performing CRUD
@@ -117,7 +117,6 @@ modules-​node.​html#split-​brain). This setting is discovery.zen.minimum_m
 ```sh
 (master_eligible_nodes / 2) + 1
 ```
-To have a High Availability (HA) cluster, you need at least three nodes that are
-masters with the value of minimum_master_nodes set to 2.
+🟥 To have a High Availability (HA) cluster, you need at least three nodes that are masters with the value of minimum_master_nodes set to 2.
 
 
