@@ -108,6 +108,11 @@ node is also called a coordinator or client node.
 To prevent the queries and aggregations from creating instability in your
 cluster, coordinator (or client/proxy) nodes can be used to provide safe
 communication with the cluster.
+How to set a node as cordinator:
+```sh
+node.master: false
+node.data: false
+```
 
 ### There's more…
 Related to the number of master nodes, there are settings that require at least half of
