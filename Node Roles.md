@@ -124,4 +124,5 @@ modules-​node.​html#split-​brain). This setting is discovery.zen.minimum_m
 ```
 🟥 To have a High Availability (HA) cluster, you need at least three nodes that are masters with the value of minimum_master_nodes set to 2.
 
-
+🟥 The best practice is to have a pool of coordinator nodes with ingestion enabled to
+provide the best safety for the cluster and ingestion pipeline.
