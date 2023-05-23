@@ -126,3 +126,7 @@ modules-​node.​html#split-​brain). This setting is discovery.zen.minimum_m
 
 🟥 The best practice is to have a pool of coordinator nodes with ingestion enabled to
 provide the best safety for the cluster and ingestion pipeline.
+
+![Elastic Search Cluster](https://github.com/soheileghbali/Elastic-Search-Cluster/blob/main/Elastcic%20Search%20Architecture.jpg)
+
+
