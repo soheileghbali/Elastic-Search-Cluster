@@ -29,6 +29,7 @@ become the master node (the node with the asterisk) by the master-election
 process. You can disable this type of role for a node by setting node.master to
 false in the elasticsearch.yml file
 
+🟥 The number of master nodes must always be even.
 
 #### Data node
 Data nodes are responsible for storing data and performing CRUD
@@ -95,10 +96,28 @@ cluster.remote.connect: false
 So, we can change the node type to any of the preceding options, but a node
 has all the types by default.
 
-#### Coordinating-only node
+#### Coordinating-only node (client node)
 If all three roles (master eligible, data, and ingest) are
 disabled, the node will only act as a coordination node that performs routing
 requests, handling the search reduction phase, and distributing works via bulk
 indexing.
+This node acts as a search load balancer (fetching data
+from nodes, aggregating results, and so on). This kind of
+node is also called a coordinator or client node.
+
+To prevent the queries and aggregations from creating instability in your
+cluster, coordinator (or client/proxy) nodes can be used to provide safe
+communication with the cluster.
+
+### There's more…
+Related to the number of master nodes, there are settings that require at least half of
+them plus one to be available to ensure that the cluster is in a safe state (no risk of
+split brain: https:/​/​www.​elastic.​co/​guide/​en/​elasticsearch/​reference/​6.​4/
+modules-​node.​html#split-​brain). This setting is discovery.zen.minimum_master_nodes, and it must be set to the following equation:
+```sh
+(master_eligible_nodes / 2) + 1
+```
+To have a High Availability (HA) cluster, you need at least three nodes that are
+masters with the value of minimum_master_nodes set to 2.
 
 
