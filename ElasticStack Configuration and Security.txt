@@ -1,0 +1,118 @@
+ELASTIC STACK - Configuration and Security
+
+!!!FIRST CHECK THAT ELASTICSEARCH IS RUNNING!!!
+
+systemctl status elasticsearch
+
+if not execute the following commands with root user:
+On node 1 
+systemctl start elasticsearch
+On node 2
+systemctl start elasticsearch
+On node 3
+systemctl start elasticsearch
+
+!!!AFTER THIS FOLLOW THE STEPS IN THE VIDEO!!!
+
+curl -X GET "localhost:9200/_cluster/health?pretty"
+
+.::On Node 1::.
+cd /usr/share/elasticsearch
+bin/elasticsearch-certutil ca
+Enter
+Enter
+bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+Enter
+Enter
+Enter
+
+cp elastic-certificates.p12 /etc/elasticsearch/
+
+cd /etc/elasticsearch/
+ls -l
+nano /etc/elasticsearch/elasticsearch.yml
+- Copy and paste following 5 lines in elasticsearch.yml file
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+
+chown root:elasticsearch /etc/elasticsearch/elastic-certificates.p12
+chmod 660 /etc/elasticsearch/elastic-certificates.p12
+
+scp /usr/share/elasticsearch/elastic-certificates.p12 elk@192.168.56.102:/home/elk/
+scp /usr/share/elasticsearch/elastic-certificates.p12 elk@192.168.56.103:/home/elk/
+
+systemctl restart elasticsearch 
+
+.::On Node 2::.
+cp /home/elk/elastic-certificates.p12 /etc/elasticsearch/
+
+nano /etc/elasticsearch/elasticsearch.yml
+- Copy and paste following 5 lines in elasticsearch.yml file 
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+
+chown root:elasticsearch /etc/elasticsearch/elastic-certificates.p12
+chmod 660 /etc/elasticsearch/elastic-certificates.p12
+
+systemctl restart elasticsearch 
+
+.::On Node 3::.
+cp /home/elk/elastic-certificates.p12 /etc/elasticsearch/
+
+nano /etc/elasticsearch/elasticsearch.yml
+- Copy and paste following 5 lines in elasticsearch.yml file 
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+
+chown root:elasticsearch /etc/elasticsearch/elastic-certificates.p12
+chmod 660 /etc/elasticsearch/elastic-certificates.p12
+
+systemctl restart elasticsearch 
+
+- Set passwords for default users
+cd /usr/share/elasticsearch
+bin/elasticsearch-setup-passwords interactive
+demo passwords:
+elastic:elastic
+apm_system:apmsystem
+kibana:kibana
+logstash_system:logstashsytem
+beats_system:beatssystem
+remote_monitoring_user:remotemonitoringuser
+- you can generate random passwords automatic using following command
+bin/elasticsearch-setup-passwords auto
+- be sure that you will remember them
+
+Test cluster health:
+curl -u elastic:elastic  -X GET "localhost:9200/_cluster/health?pretty"
+
+Configure Kibana on Node 1
+
+/bin/systemctl daemon-reload
+/bin/systemctl enable kibana.service
+nano /etc/kibana/kibana.yml 
+Change followinglines:
+server.port: 8801
+server.host: "192.168.56.101"
+elasticsearch.username: "kibana"
+elasticsearch.password: "kibana"
+
+sudo systemctl start kibana
+create test user
+
+
+
+
+
+
+
+
